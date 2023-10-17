@@ -3,6 +3,7 @@ import { Doughnut } from "react-chartjs-2";
 
 function Dougnut() {
     const [hoveredIndex, setHoveredIndex] = useState(null);
+    const [zoomLevel, setZoomLevel] = useState(70);
 
     const data = {
         labels: ["65", "40"],
@@ -17,7 +18,7 @@ function Dougnut() {
 
     const options = {
         maintainAspectRatio: false,
-        cutout: "70%", // Adjust this to control the size of the central hole
+        cutout: `${zoomLevel}%`, // Adjust this to control the size of the central hole
         plugins: {
             legend: {
                 display: false,
@@ -30,23 +31,26 @@ function Dougnut() {
             if (elements.length > 0) {
                 const hoveredIndex = elements[0].index;
                 setHoveredIndex(hoveredIndex);
+                setZoomLevel(hoveredIndex === null ? 0 : 60); // Adjust the zoom level as needed
             } else {
                 setHoveredIndex(null);
+                setZoomLevel(70);
             }
         },
     };
 
     const getMiddleText = () => {
         if (hoveredIndex === null) {
-            return `${data.labels[0]} % Total new customers`;
+            return `${data.labels[0]}% Total new customers`;
         } else {
-            return `${data.labels[hoveredIndex]} % Total new customers`;
+            return `${data.labels[hoveredIndex]}% old customers`;
         }
     };
+
     return (
         <div className="rounded-chart-container">
             <Doughnut data={data} options={options} />
-            <div className="middle-text">{getMiddleText()}</div>
+            <span className="middle-text">{getMiddleText()}</span>
         </div>
     );
 }
